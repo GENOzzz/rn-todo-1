@@ -1,5 +1,9 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
-import Input, { KeyboardTypes, ReturnKeyTypes } from '../components/Input2';
+import Input, {
+  IconNames,
+  KeyboardTypes,
+  ReturnKeyTypes,
+} from '../components/Input2';
 import { useState } from 'react';
 import SafeInputView from '../components/SafeInputView';
 
@@ -19,12 +23,14 @@ const SignInScreen = () => {
           returnKeyType={ReturnKeyTypes.Next}
           value={email}
           onChangeText={(email) => setEmail(email.trim())}
+          iconName={IconNames.EMAIL}
         />
         <Input
           title={'비밀번호'}
           secureTextEntry
           value={password}
           onChangeText={(password) => setPassword(password.trim())}
+          iconName={IconNames.PASSWORD}
         />
       </View>
     </SafeInputView>
