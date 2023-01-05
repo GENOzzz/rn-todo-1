@@ -16,6 +16,8 @@
   },
   "plugins": ["react"],
   "rules": {
-    "no-console": "warn"
+    "no-console": "warn",
+    "react/prop-types": 0,
+    "no-unused-vars": 1
   }
 }
