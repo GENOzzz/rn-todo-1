@@ -1,4 +1,4 @@
-import { Image, Keyboard, StyleSheet, Text, View } from 'react-native';
+import { Alert, Image, Keyboard, StyleSheet, Text, View } from 'react-native';
 import Input, {
   IconNames,
   KeyboardTypes,
@@ -8,20 +8,33 @@ import { useEffect, useRef, useState } from 'react';
 import SafeInputView from '../components/SafeInputView';
 import Button from '../components/Button';
 import { BLACK, GREEN, PRIMARY } from '../colors';
+import { signIn } from '../api/auth';
 
 const SignInScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const passwordRef = useRef(null);
   const [disabled, setDisabled] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setDisabled(!email || !password);
   }, [email, password]);
 
-  const onSubmit = () => {
-    Keyboard.dismiss();
-    console.log(email, password);
+  const onSubmit = async () => {
+    if (!isLoading && !disabled) {
+      try {
+        setIsLoading(true);
+        Keyboard.dismiss();
+        const data = await signIn(email, password);
+        console.log(data);
+        setIsLoading(false);
+      } catch (error) {
+        Alert.alert('로그인 실패', error, [
+          { text: '확인', onPress: () => setIsLoading(false) },
+        ]);
+      }
+    }
   };
 
   return (
@@ -49,7 +62,12 @@ const SignInScreen = () => {
           onSubmitEditing={onSubmit}
         />
         <View style={styles.buttonContainer}>
-          <Button title="로그인" onPress={onSubmit} disabled={disabled} />
+          <Button
+            title="로그인"
+            onPress={onSubmit}
+            disabled={disabled}
+            isLoading={isLoading}
+          />
         </View>
       </View>
     </SafeInputView>
