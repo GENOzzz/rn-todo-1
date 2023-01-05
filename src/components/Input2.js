@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import PropTypes from 'prop-types';
-import { GRAY, PRIMARY } from '../colors';
+import { GREEN, GRAY, PRIMARY, BLACK } from '../colors';
 import { useState } from 'react';
 
 export const KeyboardTypes = {
@@ -13,17 +13,28 @@ export const ReturnKeyTypes = {
   Next: 'next',
 };
 
-const Input = ({ title, placeholder, ...props }) => {
+const Input = ({ title, placeholder, value, ...props }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, isFocused && styles.focusedTitle]}>
+      <Text
+        style={[
+          styles.title,
+          value && styles.hasValueTitle,
+          isFocused && styles.focusedTitle,
+        ]}
+      >
         {title}
       </Text>
       <TextInput
         {...props}
-        style={[styles.input, isFocused && styles.focusedInput]}
+        value={value}
+        style={[
+          styles.input,
+          value && styles.hasValueInput,
+          isFocused && styles.focusedInput,
+        ]}
         placeholder={placeholder ?? title}
         placeholderTextColor={GRAY.DEFAULT}
         autoCapitalize="none"
@@ -55,6 +66,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: PRIMARY.DEFAULT,
   },
+  hasValueTitle: {
+    color: BLACK,
+  },
   input: {
     borderWidth: 1,
     borderRadius: 8,
@@ -66,6 +80,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: PRIMARY.DEFAULT,
     color: PRIMARY.DEFAULT,
+  },
+  hasValueInput: {
+    borderColor: GREEN,
   },
 });
 
