@@ -9,8 +9,9 @@ import SafeInputView from '../components/SafeInputView';
 import Button from '../components/Button';
 import { BLACK, GREEN, PRIMARY } from '../colors';
 import { signIn } from '../api/auth';
+import PropTypes from 'prop-types';
 
-const SignInScreen = () => {
+const SignInScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const passwordRef = useRef(null);
@@ -29,6 +30,7 @@ const SignInScreen = () => {
         const data = await signIn(email, password);
         console.log(data);
         setIsLoading(false);
+        navigation.navigate('List');
       } catch (error) {
         Alert.alert('로그인 실패', error, [
           { text: '확인', onPress: () => setIsLoading(false) },
@@ -72,6 +74,10 @@ const SignInScreen = () => {
       </View>
     </SafeInputView>
   );
+};
+
+SignInScreen.propTypes = {
+  navigation: PropTypes.object,
 };
 
 const styles = StyleSheet.create({
