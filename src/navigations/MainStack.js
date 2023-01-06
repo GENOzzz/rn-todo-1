@@ -11,14 +11,16 @@ import SettingsScreen from '../screens/SettingsScreen';
 
 const Stack = createNativeStackNavigator();
 
-const AuthStack = () => {
+const MainStack = () => {
   return (
     <Stack.Navigator
-      initialRouteName="SignIn"
       screenOptions={{
         contentStyle: { backgroundColor: WHITE },
         headerTitleAlign: 'center',
         headerTintColor: PRIMARY.DEFAULT,
+        headerTitleStyle: {
+          fontWeight: '700',
+        },
         headerLeft: HeaderLeftButton,
       }}
     >
@@ -40,4 +42,4 @@ const AuthStack = () => {
   );
 };
 
-export default AuthStack;
+export default MainStack;

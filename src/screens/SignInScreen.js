@@ -10,8 +10,13 @@ import Button from '../components/Button';
 import { BLACK, GREEN, PRIMARY } from '../colors';
 import { signIn } from '../api/auth';
 import PropTypes from 'prop-types';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 const SignInScreen = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const passwordRef = useRef(null);
@@ -41,7 +46,12 @@ const SignInScreen = ({ navigation }) => {
 
   return (
     <SafeInputView>
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          { paddingTop: insets.top, paddingBottom: insets.bottom },
+        ]}
+      >
         <Image source={require('../../assets/main.png')} />
 
         <Input
