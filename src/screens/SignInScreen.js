@@ -4,7 +4,7 @@ import Input, {
   KeyboardTypes,
   ReturnKeyTypes,
 } from '../components/Input2';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import SafeInputView from '../components/SafeInputView';
 import Button from '../components/Button';
 import { BLACK, GREEN, PRIMARY } from '../colors';
@@ -14,14 +14,17 @@ import {
   SafeAreaView,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import { setStatusBarNetworkActivityIndicatorVisible } from 'expo-status-bar';
+import UserContext, { useUserContext } from '../contexts/UserContext';
 
-const SignInScreen = ({ navigation }) => {
+const SignInScreen = () => {
   const insets = useSafeAreaInsets();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const passwordRef = useRef(null);
   const [disabled, setDisabled] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const { setUser } = useUserContext();
 
   useEffect(() => {
     setDisabled(!email || !password);
@@ -33,9 +36,8 @@ const SignInScreen = ({ navigation }) => {
         setIsLoading(true);
         Keyboard.dismiss();
         const data = await signIn(email, password);
-        console.log(data);
         setIsLoading(false);
-        navigation.navigate('List');
+        setUser(data);
       } catch (error) {
         Alert.alert('로그인 실패', error, [
           { text: '확인', onPress: () => setIsLoading(false) },

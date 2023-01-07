@@ -32,11 +32,6 @@ const MainStack = () => {
           headerRight: HeaderRightButton,
         }}
       />
-      <Stack.Screen
-        name="SignIn"
-        component={SignInScreen}
-        options={{ title: '로그인', headerShown: false }}
-      />
       <Stack.Screen name="Settings" component={SettingsScreen} />
     </Stack.Navigator>
   );

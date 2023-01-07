@@ -4,12 +4,20 @@ import { StyleSheet, Text, View } from 'react-native';
 import { WHITE } from './colors';
 import SignInScreen from './screens/SignInScreen';
 import AuthStack from './navigations/AuthStack';
+import { useState } from 'react';
+import MainStack from './navigations/MainStack';
+import UserContext, { UserProvider } from './contexts/UserContext';
+import Navigation from './navigations/Navigation';
 
-export default function App() {
+const App = () => {
+  const [user, setUser] = useState(null);
+
   return (
-    <NavigationContainer>
+    <UserProvider>
       <StatusBar style="dark" />
-      <AuthStack />
-    </NavigationContainer>
+      <Navigation />
+    </UserProvider>
   );
-}
+};
+
+export default App;
