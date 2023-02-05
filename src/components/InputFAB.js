@@ -9,12 +9,16 @@ import {
   useWindowDimensions,
   Platform,
   Keyboard,
+  Animated,
 } from 'react-native';
-import { BLACK, PRIMARY, WHITE } from '../colors';
+import { BLACK, DANGER, PRIMARY, WHITE } from '../colors';
+import Input from './Input2';
+import PropTypes from 'prop-types';
 
 const BOTTOM = 30;
+const BUTTON_WIDTH = 60;
 
-const InputFAB = () => {
+const InputFAB = ({ onInsert }) => {
   const [text, setText] = useState('');
   const [isOpened, setIsOpened] = useState(false);
   const inputRef = useRef();
@@ -36,29 +40,72 @@ const InputFAB = () => {
     }
   }, []);
 
+  const inputWidth = useRef(new Animated.Value(BUTTON_WIDTH)).current;
+  const buttonRotation = useRef(new Animated.Value(0)).current;
+
   const open = () => {
-    inputRef.current.focus();
     setIsOpened(true);
+    Animated.timing(inputWidth, {
+      toValue: windowWidth - 20,
+      useNativeDriver: false,
+      duration: 300,
+    }).start(() => {
+      inputRef.current.focus();
+      Animated.spring(buttonRotation, {
+        toValue: 1,
+        useNativeDriver: false,
+        bounciness: 20,
+      }).start();
+    });
   };
   const close = () => {
     if (isOpened) {
       inputRef.current.blur();
       setText('');
       setIsOpened(false);
+      Animated.timing(inputWidth, {
+        toValue: BUTTON_WIDTH,
+        useNativeDriver: false,
+        duration: 300,
+      }).start(() => {
+        inputRef.current.blur();
+      });
+      Animated.spring(buttonRotation, {
+        toValue: 0,
+        useNativeDriver: false,
+        bounciness: 20,
+      }).start();
     }
   };
+
+  const spin = buttonRotation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '315deg'],
+  });
+
   const onPressButton = () => {
     isOpened ? close() : open();
   };
 
+  const onPressInsert = () => {
+    const task = text.trim();
+    if (task) {
+      onInsert(task);
+    }
+  };
+
   return (
     <>
-      <View
+      <Animated.View
         style={[
           styles.position,
           styles.shape,
           styles.shadow,
-          { justifyContent: 'center', bottom: keyboardHeight },
+          {
+            justifyContent: 'center',
+            bottom: keyboardHeight,
+            width: inputWidth,
+          },
           isOpened && { width: windowWidth - 20 },
         ]}
       >
@@ -73,22 +120,36 @@ const InputFAB = () => {
           textContentType="none"
           keyboardAppearance="light"
           returnKeyType="done"
+          onSubmitEditing={onPressInsert}
         />
-      </View>
-      <Pressable
-        style={({ pressed }) => [
+      </Animated.View>
+      <Animated.View
+        style={[
           styles.position,
           styles.shape,
-          styles.button,
-          { bottom: keyboardHeight },
-          pressed && { backgroundColor: PRIMARY.DARK },
+          {
+            bottom: keyboardHeight,
+            transform: [{ rotate: spin }],
+          },
         ]}
-        onPress={onPressButton}
       >
-        <MaterialCommunityIcons name="plus" size={24} color={WHITE} />
-      </Pressable>
+        <Pressable
+          style={({ pressed }) => [
+            styles.shape,
+            styles.button,
+            pressed && { backgroundColor: PRIMARY.DARK },
+          ]}
+          onPress={onPressButton}
+        >
+          <MaterialCommunityIcons name="plus" size={24} color={WHITE} />
+        </Pressable>
+      </Animated.View>
     </>
   );
+};
+
+InputFAB.propTypes = {
+  onInsert: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -109,26 +170,19 @@ const styles = StyleSheet.create({
     right: 10,
   },
   shape: {
-    height: 60,
-    width: 60,
-    borderRadius: 30,
+    height: BUTTON_WIDTH,
+    width: BUTTON_WIDTH,
+    borderRadius: BUTTON_WIDTH / 2,
     backgroundColor: PRIMARY.DEFAULT,
   },
   input: {
     color: WHITE,
     paddingLeft: 20,
-    paddingRight: 70,
+    paddingRight: BUTTON_WIDTH + 10,
   },
   button: {
-    position: 'absolute',
-    bottom: 30,
-    right: 10,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: PRIMARY.DEFAULT,
   },
 });
 

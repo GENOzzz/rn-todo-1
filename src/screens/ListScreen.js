@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { memo } from 'react';
+import { useState } from 'react';
 import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GRAY, PRIMARY } from '../colors';
@@ -9,17 +9,16 @@ import List from '../components/List';
 
 const ListScreen = () => {
   const { bottom } = useSafeAreaInsets();
-  const todos = [];
-  /*{ id: 1, task: 'React Native', isDone: false },
-    { id: 2, task: 'FlatList', isDone: false },
-    { id: 3, task: 'React Navigation', isDone: true },
-    { id: 4, task: 'TODO APP', isDone: false },
-    { id: 5, task: 'React.memo', isDone: true },*/
+  const [todos, setTodos] = useState([]);
+  const onInsert = (task) => {
+    const id = Date.now.toString();
+    setTodos((prev) => [{ id, task, isDone: false }, ...prev]);
+  };
 
   return (
     <View style={{ flex: 1, paddingBottom: bottom }}>
       {todos.length ? <List data={todos} /> : <EmptyList />}
-      <InputFAB />
+      <InputFAB onInsert={onInsert} />
     </View>
   );
 };
