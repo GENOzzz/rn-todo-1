@@ -8,6 +8,7 @@ import { useState } from 'react';
 import MainStack from './navigations/MainStack';
 import UserContext, { UserProvider } from './contexts/UserContext';
 import Navigation from './navigations/Navigation';
+import 'react-native-get-random-values';
 
 const App = () => {
   const [user, setUser] = useState(null);

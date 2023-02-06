@@ -14,11 +14,13 @@ import {
 import { BLACK, DANGER, PRIMARY, WHITE } from '../colors';
 import Input from './Input2';
 import PropTypes from 'prop-types';
+import { ScreenStackHeaderBackButtonImage } from 'react-native-screens';
 
+const RIGHT = 10;
 const BOTTOM = 30;
 const BUTTON_WIDTH = 60;
 
-const InputFAB = ({ onInsert }) => {
+const InputFAB = ({ onInsert, isBottom }) => {
   const [text, setText] = useState('');
   const [isOpened, setIsOpened] = useState(false);
   const inputRef = useRef();
@@ -42,6 +44,7 @@ const InputFAB = ({ onInsert }) => {
 
   const inputWidth = useRef(new Animated.Value(BUTTON_WIDTH)).current;
   const buttonRotation = useRef(new Animated.Value(0)).current;
+  const buttonRight = useRef(new Animated.Value(RIGHT)).current;
 
   const open = () => {
     setIsOpened(true);
@@ -94,6 +97,13 @@ const InputFAB = ({ onInsert }) => {
     }
   };
 
+  useEffect(() => {
+    Animated.timing(buttonRight, {
+      toValue: isBottom ? RIGHT - BUTTON_WIDTH : RIGHT,
+      useNativeDriver: false,
+    }).start();
+  }, [buttonRight, isBottom]);
+
   return (
     <>
       <Animated.View
@@ -105,6 +115,8 @@ const InputFAB = ({ onInsert }) => {
             justifyContent: 'center',
             bottom: keyboardHeight,
             width: inputWidth,
+            right: buttonRight,
+            position: 'absolute',
           },
           isOpened && { width: windowWidth - 20 },
         ]}
@@ -130,6 +142,8 @@ const InputFAB = ({ onInsert }) => {
           {
             bottom: keyboardHeight,
             transform: [{ rotate: spin }],
+            right: buttonRight,
+            position: 'absolute',
           },
         ]}
       >
@@ -150,6 +164,7 @@ const InputFAB = ({ onInsert }) => {
 
 InputFAB.propTypes = {
   onInsert: PropTypes.func.isRequired,
+  isBottom: PropTypes.bool.isRequired,
 };
 
 const styles = StyleSheet.create({

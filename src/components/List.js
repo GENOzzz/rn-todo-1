@@ -7,7 +7,7 @@ const Separator = () => {
   return <View style={styles.separator}></View>;
 };
 
-const List = ({ data }) => {
+const List = ({ data, setIsBottom }) => {
   return (
     <FlatList
       data={data}
@@ -17,12 +17,20 @@ const List = ({ data }) => {
       ItemSeparatorComponent={Separator}
       ListHeaderComponent={View}
       ListHeaderComponentStyle={{ height: 10 }}
+      onScroll={({
+        nativeEvent: { contentOffset, layoutMeasurement, contentSize },
+      }) => {
+        const distance =
+          contentSize.height - (contentOffset.y + layoutMeasurement.height);
+        setIsBottom(!(distance > 20 || contentOffset.y === 0));
+      }}
     />
   );
 };
 
 ListItem.propTypes = {
   data: PropTypes.array.isRequired,
+  setIsBottom: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({
